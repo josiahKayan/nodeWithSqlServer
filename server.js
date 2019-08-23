@@ -1,6 +1,9 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var sql = require('mssql');
+const auth = require('./middlewares/auth');
+const config = require('./config/config');
+const jwt = require('jsonwebtoken');
 
 var app = express();
 
@@ -58,33 +61,42 @@ var executeQuery = function(res , query){
     });
 }
 
+const createUserToken = ( userId ) =>{
+    return jwt.sign({"userId":userId},config.SALT_KEY,{expiresIn: '1d'});
+}
+
+//Logar
+app.get( '/create', function(req,res){
+    res.send({token:createUserToken(1)});
+});
+
 //GET ALL PRODUCTS API
-app.get( '/', function(req,res){
+app.get( '/',auth, function(req,res){
     var query = "select * from Produto";
     executeQuery(res, query);
 });
 
 //GET PRODUCT BY ID API
 app.get( '/api/product/:id', function(req,res){
-    var query = "select * from Produto where ID = "+ req.params.id;
+    var query = "select * from Produto where ProdutoId = "+ req.params.id;
     executeQuery(res, query);
 });
 
 //POST API
 app.post( '/api/porduct' ,function( req, res){
-    var query = "Insert into Produto values(req.body.NomeProduto,req.body.Preco )";
+    var query = "Insert into Produto values('"+req.body.ProdutoNome+"',"+req.body.Preco +")";
     executeQuery(res, query);
 });
 
 //PUT API
 app.put("/api/product/:id", function(req , res){
-    var query = "UPDATE Produto SET ProdutoNome= " + req.body.NomeProduto  +  " , Preco=  " + req.body.Preco + "  WHERE Id= " + req.params.id;
+    var query = "UPDATE Produto SET ProdutoNome= '" + req.body.ProdutoNome  +  "' , Preco=  " + req.body.Preco + "  WHERE ProdutoId= " + req.params.id;
     executeQuery (res, query);
 });
 
 // DELETE API
 app.delete("/api/product/:id", function(req , res){
-    var query = "DELETE FROM Produto WHERE Id=" + req.params.id;
+    var query = "DELETE FROM Produto WHERE ProdutoId=" + req.params.id;
     executeQuery (res, query);
 });
 
