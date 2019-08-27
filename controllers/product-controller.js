@@ -1,6 +1,7 @@
 const repository = require('../repositories/product-repository');
 const express = require('express');
-
+const config = require('../config/config');
+const jwt = require('jsonwebtoken');
 
 //GET ALL PRODUCTS API
 exports.getAll =  (req,res) => {
@@ -50,3 +51,11 @@ exports.delete =  (req,res) => {
         res.status(400).send({message:"Falha ao deletar produto"});
     });
 };
+
+exports.logar = (req, res) =>{
+    res.status(200).send(createUserToken(1));
+}
+
+const createUserToken = ( userId ) =>{
+    return jwt.sign({"userId":userId},config.SALT_KEY,{expiresIn: '1d'});
+}

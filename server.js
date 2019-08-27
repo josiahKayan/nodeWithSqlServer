@@ -1,7 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 // const auth = require('./middlewares/auth');
-const jwt = require('jsonwebtoken');
 const productRoute = require('./routes/product-route');
 
 var app = express();

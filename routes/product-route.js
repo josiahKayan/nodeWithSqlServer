@@ -1,18 +1,19 @@
 const productController = require('../controllers/product-controller');
+const auth = require('../middlewares/auth');
 const express = require('express');
 const router = express.Router();
 
+router.get('/fazerlogin/token',productController.logar);
 
-router.get('/', productController.getAll );
+router.get('/', auth,productController.getAll );
 
-router.get('/:id', productController.get );
+router.get('/:id',auth, productController.get );
 
-router.post('/create', productController.post );
+router.post('/create',auth, productController.post );
 
-router.put('/update/:id', productController.put );
+router.put('/update/:id',auth, productController.put );
 
-router.delete('/delete/:id', productController.delete );
-
+router.delete('/delete/:id',auth, productController.delete );
 
 
 module.exports = router;
