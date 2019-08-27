@@ -3,9 +3,13 @@ const express = require('express');
 const config = require('../config/config');
 const jwt = require('jsonwebtoken');
 
+const pageSize = 10;
+const numberPage = 2;
+
+
 //GET ALL PRODUCTS API
 exports.getAll =  (req,res) => {
-    repository.getAll(req,res).then( x => {
+    repository.getAll(req,res,req.query.numberPage,req.query.pageSize).then( x => {
         res.status(200).send(x);
     }).catch( e =>{
         res.status(400).send({message:"Erro ao Listar"});

@@ -8,8 +8,8 @@ const dbConfig = require('../connection/connection');
 // });
 
 //GET ALL PRODUCTS API
-exports.getAll = (req,res) => {
-    var query = "select * from Produto";
+exports.getAll = (req,res,numberPage,pageSize) => {
+    var query = "select * from Produto ORDER BY ProdutoId OFFSET "+numberPage+" ROWS FETCH NEXT "+pageSize+" ROWS ONLY;";
     return executeQuery(1, query);
 };
 
